@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <title>Scope</title>
+    </head>
+    <body>
+        <a href="/ejercicios/"> go back</a>
+        <p> <em>Abre la consola</em> </p>
+
+        <script src="https://unpg.com/jquery@3.3.1/dist/jquery.js">
+            //Global Scope
+            //cuando se traen modulos o script mediantre un CDN, como jQuery, tambien es global.
+            //probar desde la consola > $ o $$ , se vera que jquery esta disponible
+        </script>
+    
+        <script>
+            //Global Scope. Toda variable que se declare fuera de una funcion o de un bloque, sera global
+            //y ese scope global, se llama window, por eso desde
+            //consola se puede poner:  window.mensaje y se vera el texto.
+            var mensaje = "Hola que tal!";
+
+            //Function Scope
+
+            //pero si sobre escribe, la misma variable ( $ ) normalmente usada por jquery
+            var $ = function(mensaje) {
+                console.log('Say: ' + mensaje);
+            };
+
+            //otro ejemplo:
+            //setTimeout: Funcion disponible globalmente, que eventualmente ejecutara una funcion
+            function printNumbers() {
+                for(var i = 0; i < 10; i++) {
+                    setTimeout(function() {
+                        console.log(i);
+                    }, 100);
+                }
+            }
+            //porque imprime 10 veces el 10, en lugar de imprimir la lista del 1 al 10?
+            //pq setTimeout, espera 100 milisegundos, y cuando termina ya recorrio hasta 
+            //i=10, por eso lo imprime 10 veces el 10.
+            printNumbers();
+
+            //ahora si se imprimira del 0 al 9..
+            function printNumbers2() {
+                for(var i = 0; i < 10; i++) {  //al usar var, se conviernte en variable global, NO en variable de function. OJO.
+                    function eventuallyPrintNumber(n) {
+                        setTimeout(function() {  //sucede pq esta funcion NO se ejecuta inmediatamente, sino que espera N milisegundos.. mientras que el for lo ejecuta inmediatamente y no tiene que esperar a que termine esta funcion
+                            console.log(n);
+                        }, 100);
+                    }
+
+                    eventuallyPrintNumber(i);
+                }
+            };
+
+            printNumbers2();
+
+            //Block Scope
+                //Let y const operan sobre el block scope
+            //ahora si se imprimira del 0 al 9..
+            function printNumbers3() {
+                for(let i = 0; i < 10; i++) {  //al usar let, se convierte en variable local al block scope, del for. OJO. y por cada iteracion se genera un nuevo block scope y por eso sabe que valor va a tener i
+                    setTimeout(function() {  //sucede pq esta funcion NO se ejecuta inmediatamente, sino que espera N milisegundos.. mientras que el for lo ejecuta inmediatamente y no tiene que esperar a que termine esta funcion
+                        console.log(i);
+                    }, 100);
+                }
+            };
+
+            printNumbers3();
+
+
+            //Module Scope
+                //para modulos como webPack, babel, node, etc.
+                //La vida de la variable va a estar limitada al archivo en donde se declaro.
+                
+        </script>
+                
+        <script type = "module" src="/assets/index.js">  //se agrega que es de tipo modulo
+            //Module Scope
+                //para modulos como webPack, babel, node, etc.
+                //La vida de la variable va a estar limitada al archivo en donde se declaro.
+                //type="module", no esta en todos los navegadores, pero si en loas mas recientes.
+
+                //para probarlo: las variables como MediaPlayer, video, player, button, ya NO se veran desde la consola
+                //porque solo se veran dentro del archivo index.js
+                // ssaldra algo asi:
+                //Uncaught ReferenceError: video is not defined
+                //    at <anonymous>:1:1
+                //Uncaught ReferenceError: button is not defined
+                //    at <anonymous>:1:1
+
+                //Cuando usas module scope, DEBE agregarse la extension. OJO
+            //No salen del archivo porque el Module Scope, esta limitando si acceso., no salen del modulo
+        </script>
+    </body>
+</html>
