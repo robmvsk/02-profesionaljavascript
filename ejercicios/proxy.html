@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <title>Proxy</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script src="https://unpkg.com/fast-levenshtein@2.0.6/levenshtein.js"></script>
+    <script>
+      // Proxy es parecido a getters y setters
+      // Usa un concepto que se llama traps: son interceptores de llamadas. A diferencia de getters, no opera sobre una propieda, si no sobre un objeto.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Methods_of_the_handler_object
+
+      // Creemos un ejemplo donde interceptamos llamadas para leer una propiedad
+      // Si la propiedad existe, la regresamos
+      // Si no existe, entonces sugerimos una que pueda funcionar
+      //parecido a lo que hace git, que te sugiere comandos parecidos , cuando metes un comando equivocado
+      //git addd, te sugiere git add
+
+      // Para eso eso vamos a usar un algoritmo que se llama Levenshtein. (window.Levenshtein.get)
+      // Ejemplos de levenshtein distance (usa window.Levenshtein)
+/*
+        window.Levenshtein.get("JavaScript", "Java")  distancia de 6 letras
+        window.Levenshtein.get("Script", "Scrpt")  distancia de una letra
+        window.Levenshtein.get("Script", "scrip") distancia de 2 letras
+        hace diferencia entre mayusculas y monusculas
+*/
+        //queremos que se nos ayude al escribir estas propiedades (del target)
+        const target = {
+            red: 'Rojo',
+            green: 'Verde',
+            blue: 'Azul',
+        }
+
+        //para que se nos ayude, se escribe el handler
+        //puede tener varias funciones, cuales? las trampas definidas en 
+        //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy  (Handler functions)
+
+        const handler = {
+            get(obj, prop) {
+                //debugger;  //cuando la ejecucion llegue a esta linea se va a deterner, se podra inspeccionar linea por linea
+                if (prop in obj) {
+                    return obj[prop];
+                }
+
+                //hayq eu buscar una sugerencia, en caso de que se pueda dar una
+                //cual es la llave que mas se parece a la que esta buscando el usuario
+                /* const suggestion = Object.keys(obj).find(key => {
+                    return Levenshtein.get(key, prop) <= 3
+                }) */
+
+                const suggestion = Object.keys(obj).find(key => 
+                    Levenshtein.get(key, prop) <= 3
+                )
+                
+                if (suggestion) {
+                    console.log(`${prop} no se encontró. Quisiste decir ${suggestion}?`);
+                }
+
+                return obj[prop];
+            },
+        };
+
+        const p = new Proxy(target, handler); //el target, es el objeto que queremos interceptar, el handler es otro objeto que es la funcion al que le vamos a poner la trampa para interceptar (que funcion vamos a interceptar del objeto target)
+
+        /*
+        probando desde consola
+        ponemos: p, debe regresar Proxy  {red: "Rojo", green: "Verde", blue: "Azul"}
+
+        */
+    </script>
+  </body>
+</html>

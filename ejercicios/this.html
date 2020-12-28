@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>Closures</title>
+    </head>
+    <body>
+        <a href="/ejercicios/"> go back</a>
+        <p> <em>Abre la consola</em> </p>
+
+        <h2>
+            <code>this</code> se refiere a un objeto. Ese objeto es el que actualmente 
+            se está ejecutando un pedazo de código.
+        </h2>
+        <script>
+            //this en el objeto global (window)
+            console.log(`this: ${this}`);  //regresa:  this: [object Window]
+
+            //this en el scope de una funcion
+            function whoIsThis() {
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);  //regresa:  whoIsThis(): [object Window], regreso lo mismo
+
+
+            //this en el scope de una funcion en strict mode
+
+            //se activa manualmente, mediate la instruccion use scritc
+            //"use strict";  //indica que el modo stricto es a partir de aqui, pero si lo movemos dentro de la funcion, solo aplicara dentro de ella.
+
+            function whoIsThisUseStrict() {
+                "use strict";
+                return this;
+            }
+
+            console.log(`whoIsThisUseStrict(): ${whoIsThisUseStrict()}`);  //regresa:  whoIsThisUseStrict(): undefined, pero si activo el modo estricto global, imprime lo mmismo que el anterior console log: [object Window]
+           
+
+            //this en el scope de un objeto
+
+            const person = {
+                name: 'Roberto',
+
+                saludar: function() {
+                    console.log(`hola soy ${this.name}`);
+                }
+            }
+
+            console.log(`person.saludar: ${person.saludar()}`);  //respuesta:  person.saludar: undefined, no se debe escribir en consola, ya esta dentro de la funcion, solo llamarla
+            person.saludar();  //aqui this, es el objeto person., el resultado es:  hola soy Robert
+
+            //this cuando sacamos a una funcion (o metodo) de un objeto: en este caso la funcion saludar
+            const accion = person.saludar;  // no se quiere ejecutar, se quiere que se asigne el metodo saludar a accion.
+            //IMPORTANTE: en este caso this es accion, y no person
+            accion();  //se ejecuta accion.  y el resultado es :  hola soy  , como se observa Roberto NO se imprime, porque?
+
+            //this en el scope o contexto de una 'clase', 
+            
+            //EN JAVAsCRIPT NO EXISTEN LAS CLASES, 
+            //PERO SE LES SUELE LLAMAR CLASES A LAS QUE SE DEFINE CON NEW
+
+            //Creando un nuevo Objeto, que algunos suelen llamr clase.
+            function Person (name) {  //esto funciona como un cronstructor
+                //this = {}   //todas las funciones tienen un valor de this, pero resulta siempre lo tienen vacio.
+                this.name = name;  //el this no se puede asignar directamente, pero si se puede asignar una propiedad del this.
+                //IMPORTANTE: este this, se refiere a la isntancia, NO al this del objeto prototipal o clase definida.
+            }
+            //si a las funciones les quieres poner o dar un metodo, SIEMPRE, se hace mediante prototype
+            Person.prototype.saludar = function() {
+                console.log(`hi! me llamo ${this.name}`);
+            }
+
+            //despues de crear el objeto se hace una instancia de ese objeto, para poderlo utulizar
+            const angela = new Person('Angela');
+            //en este contexto, this, se va a referir a la instancia del objeto, NO al objeto Person.
+            angela.saludar();  //ejecuta su metodo definido para la clase u objeto Person
+
+            //this NO se puede modificar, pero existen metodos que son parte del prototipo de function, 
+            //llamados call, apply y bind, que nos van a permitir a establecer el this que va a ser el contexto
+            //de la llamada a una funcion
+        </script>
+    
+     </body>
+</html>

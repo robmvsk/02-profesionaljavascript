@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <title>Prototype</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script>
+      // Un objeto común y corriente . EJERCICIO 1
+       const zelda1 = {
+         name: 'Zelda',
+       };
+
+       zelda1.saludar = function() {
+         console.log(`Hola yo soy ${this.name}`);
+       };
+
+       zelda1.saludar();
+
+       const link1 = {
+         name: 'Link',
+       };
+
+       link1.saludar = function() {
+         console.log(`Hola yo soy ${this.name}`);
+       };
+
+       link1.saludar();
+
+      // Seamos un poco más eficientes. EJERCICIO 2
+       function Hero2(name) {
+         const hero = {
+           name: name,
+         };
+
+         hero.saludar = function() {
+           console.log(`Hola soy ${this.name}`);
+         };
+
+         return hero;
+       }
+       const zelda2 = Hero2('Zelda');
+       zelda2.saludar();
+
+       const link2 = Hero2('Link');
+       link2.saludar();
+
+       //LA FUNCION SALDAR SE CONSTRUYE CADA VEZ QUE SE LLAMA A EJECUTAR, SE PUEDE SER UN POC MAS EFICIENTE.
+      
+       //EJERCICIO 3.
+       // Aun podemos mejorar más y evitar tener que crear la misma función cada vez
+       const heroMethods3 = {
+         saludar: function() {
+           console.log(`Me llamo ${this.name}`);
+         },
+       };
+
+       function Hero3(name) {
+         const hero = {
+           name: name,
+         };
+         hero.saludar = heroMethods3.saludar;
+         return hero;
+       }
+
+       const zelda3 = Hero3('Zelda');
+       zelda3.saludar();
+
+       const link3 = Hero3('Link');
+       link3.saludar();
+
+      // Object.create. EJERCICIO 4. Siempre hay una mejor forma de hacer esto.
+       //const nuevoObjeto = Object.create(objeto)
+       const heroMethods4 = {
+         saludar: function() {
+           console.log(`Soy superheroe! ${this.name}`);
+         },
+       };
+
+       function Hero4(name) {
+         const hero = Object.create(heroMethods4);  //esta es la herencia prototipal, ya que todas las propiedades de heroMethos4 se las pasa al nuevo objeto hero que se refleja con el return como el nuevo objeto Hero4
+         hero.name = name;  //como name NO es parte del objeto hay que recuperarlo asi
+
+         return hero;
+       }
+
+       const zelda4 = Hero4('Zelda');
+       zelda4.saludar();
+
+       const link4 = Hero4('Link');
+       link4.saludar();
+
+       //detengamonsnos y usando la consola, para entender que hace exactamente Object.create, porque va mas alla de simplemente copiar propiedades de un objeto a uno nuevo
+       //ver notas en  https://docs.google.com/document/d/1XC1wFNdimsUCeY9xUR9MeRUJHgD6lEWRmyGEJVAIqzw/edit#  leccion 10
+
+
+      // Los métodos de hero dentro de Hero,  EJERCICIO 5
+      //Todas las funciones tiene un metodo llamado prototype, e inicialmente esta vacio
+
+      // const heroMethods = {
+      //   saludar: function() {
+      //     console.log(`Soy superheroe! ${this.name}`);
+      //   },
+      // };
+
+       Hero5.prototype.saludar = function() {
+         console.log(`Soy superheroina! ${this.name}`);
+       };
+
+       function Hero5(name) {
+         const hero = Object.create(Hero5.prototype);
+         hero.name = name;
+
+         return hero;
+       }
+
+       const zelda5 = Hero5('Zelda');
+       zelda5.saludar();
+
+       const link5 = Hero5('Link');
+       link5.saludar();
+
+       //EJERCICIO 6.
+       //si usas new ya no es necesario asignar el Objet.create, lo hace el mismo lenguaje.
+      // new es un atajo (azucar sintactica) para llevar Hero.prototype al objeto que estamos creando
+      function Hero6(name) {  //este esl e Constructor
+        //IMPORTANTE: internamente el lenguaje asigna el nuevo objeto creado con el prototype correcto al objeto this. No lo estamos haciendo nosotros, es el lenguaje quien lo hace.
+        // this = Object.create(Hero.prototype);  //ya no es necesario, lo hace implicitamente el lenguaje
+        this.name = name;  //EN LUGAR DE hero.name = name;
+        // return this;  // ya no es necesario, el lenguaje lo hace implicitamente.
+      }
+
+      Hero6.prototype.saludar = function() {  //Hero6.prototype 
+        console.log(`New: ${this.name}`);
+      };
+
+      const zelda6 = new Hero6('Zelda');  //SIEMPRE VA a instancia del Objeto.prototype que este despues de new, en este caso Herro, y lo que instancia realmente es Hero.prototype, SIEMPRE lo saca del Constructor
+      zelda6.saludar();
+
+      const link6 = new Hero6('Link');
+      link6.saludar();
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <title>Herencia Prototipal</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <h1>
+      <code>SomeObject.prototype</code> es un objeto donde definimos el
+      prototipo de las instancias de <code>SomeObject</code>. Es decir, las
+      instancias de <code>SomeObject</code> van a "heredar" de
+      <code>SomeObject.prototype</code>.
+      <br />
+      <br />
+      <code>SomeObject.[[Prototype]]</code> es el prototipo de
+      <code>SomeObject</code>. Es decir, <code>SomeObject</code> "hereda" de
+      <code>SomeObject.prototype</code>.
+
+      <p>Todos los ejercicios se hicieron desde la consola, revisar
+        https://docs.google.com/document/d/1XC1wFNdimsUCeY9xUR9MeRUJHgD6lEWRmyGEJVAIqzw/edit#
+        Leccion 11.
+      </p>
+    </h1>
+
+    <script>
+      function Hero(name) {
+        this.name = name;
+      }
+
+      Hero.prototype.saludar = function() {
+        console.log(`Hola, soy ${this.name}.`);
+      };
+
+      const zelda = new Hero('Zelda');
+
+      // propiedades de la instancia
+      console.log('Name:', zelda.name);
+      // propiedades de la "clase"
+      console.log('Saludar:', zelda.saludar);  //no se va a ejecutar, solo se va a referenciar
+
+      // propiedades heredadas ej: toString, que vienen de Object, que no son de Hero
+      console.log('toString:', zelda.toString);
+
+      // hasOwnProperty (de dónde sale toString o esto?), para saber si le pertenece al mismo objeto o lo toma prestado de otro objeto, mediant eherencia. este metodo esta tambien en Object
+      console.log(
+        'zelda.hasOwnProperty("name"):',
+        zelda.hasOwnProperty('name')
+      );  //esta propiedad si es de zelda.
+
+      console.log(
+        'zelda.hasOwnProperty("saludar"):',
+        zelda.hasOwnProperty('saludar')
+      );  //saludar ya no es de zelda, lo tomo del objeto Hero y no le pertenece, pero lo heredo
+
+      // a partir de aqui se hacen los ejercicios en la consola:
+
+      // inspeccionemos el prototipo del zelda
+      // inspeccionemos el prototipo del Hero
+      // inspeccionemos el prototipo del Object
+    </script>
+  </body>
+</html>

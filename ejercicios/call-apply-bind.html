@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <title>
+      Function.prototype.call, Function.prototype.apply, Function.prototype.bind
+    </title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <p>Se descomentas despues de ver el metodo bind, para revisar aquellos objetos que se parecen pero no son iguales y les falta algun metodo, que otro objeto parecido tiene.
+        por ejemplo cuando buscar el getElementByClassName del DOM, lo que regresa es un objeto del tipo
+        NodeList, no es un arreglo, por lo tanto, no tiene todos los metodos que tiene un array, por ejemplo el foreach.
+        Ejemplo practico cuando usar call, apply o bind:
+    </p>
+    <ul>
+      <li><button class="call-to-action" id='uno'>Aprender</button></li>
+      <li><button class="call-to-action" id='dos'>Aprender Más</button></li>
+      <li><button class="call-to-action" id='tres'>¡Nunca parar de Aprender!</button></li>
+    </ul>
+
+    <script>
+      // Establece `this` usando `call`
+      //con la sola function sin el objeto, this es:  Window {window: Window, self: Window, document: document, name:...
+        //si se pone en consola saludar(), no existe un this, por lo tanto se imprimira:  Hola. Soy  undefined 
+      function saludar() {
+        console.log(`Hola. Soy ${this.name} ${this.apellido}`);
+      }
+
+      //para comentar varias lineas  Shift + Alt + A
+
+      //estableciendo un objeto y usando call, el this es:
+      //con ayuda del call, se va a establecer cual va a ser el this o contexto de la funcion
+       const richard = {
+        name: 'Richard',
+        apellido: 'Kaufman López',
+      };
+      //con ayuda del call que ya viene encapsulado en cualquier function, se establece cual es el contexto.
+      //en este caso cuando pones en consola:  saludar(), se imprime:  call-apply-bind.html:22 Hola. Soy Richard Kaufman López
+      saludar.call(richard);  //IMPORTANTE: el primer parametro es el this, y sin ningun otro parametro
+ 
+      //ahora cuando las funciones reciben parametros, se usa de la siguiente forma: 
+
+      // Establece `this` usando `call` y pasar argumentos a la función
+       function caminar(metros, direccion) {
+        console.log(`${this.name} ${this.apellido}, camina ${metros} metros hacia el ${direccion}.`);
+      }
+
+      //como se observa se pueden combinar varias funciones, ya que cada una de ellas va a saber quien es el this o contexto, debido al primer parametro que recibe.
+      //se pasa el this o contexto, ademas de los argumentos, es como enbbeber el contexto a la funcion principal en este caso saludar() o caminar(metros, direccion)
+      caminar.call(richard, 400, 'norte');
+      //resultado:  Richard Kaufman López, camina 400 metros hacia norte.
+
+
+      // Establece `this` usando `apply` y pasar argumentos a la función
+      //apply hace lo mismo que call, PERO los argumentos se pasan de forma diferente.
+      const valores = [800, 'noreste'];
+      caminar.apply(richard, valores);  //lo parametros se pasn como un arreglo
+      //resultado:  Richard Kaufman López, camina 800 metros hacia noreste.
+      
+      //TIPS: como recordar si es Call o Apply
+      //  Call - la C de comma
+      //  Apply - la A de arreglo
+      
+
+      // Establecer `this` en una nueva función usando `bind`
+      //bind, va a llamar a la function automaticamente, sino que va a construir una nueva funcion, la cual va a tener el this integrado
+      //por lo tanto se hace el llamado a esta nueva function.
+      const daniel = { name: 'Daniel', apellido: 'Sánchez' };
+      const danielSaluda = saludar.bind(daniel);  //se crea la nueva funcion llamada danielSaluda, con el this llamado daniel, pero 
+      //hasta aqui la nueva funcion danielSaluda aun no se ejecuta, solo se creo.
+      //checando en la consola aun no se muesta el saludo de daniel, sino hasta que la masndas a ejecutar: es decir la siguiente linea:
+
+      danielSaluda();
+
+      //ahora si la funcion  requiere parametros, como se usa con bind?
+      //se le conoce como vamos a baindear la funcion caminar y le vamos a baindear a daniel
+      const danielCamina = caminar.bind(daniel);
+      danielCamina(1000, 'este');
+
+      //hay otra forma de agregar TODOS los argumentos:
+      const danielCaminaSegndaVez = caminar.bind(daniel, 500, 'sur');
+      danielCaminaSegndaVez();
+      danielCaminaSegndaVez();
+
+      //hay otra forma de agregar los argumentos PARCIALES: Tecnica llamada Guring, permite funciones reutilizables.
+      const danielCaminaTerceraVez = caminar.bind(daniel, 1700);
+      danielCaminaTerceraVez('oeste');
+
+
+      // ===Ejemplo practico cuando usar call, apply o bind:
+
+      // Cuándo es útil usar uno de estos métodos
+      const buttons = document.getElementsByClassName('call-to-action');
+      console.log(`tamaño: ${buttons.length}`);
+      //queremos que cuando le de un click a un boton, aparezca un alert con su respectivo mensaje
+ /*
+   Se comenta para que funcione la redefinicion de la funcion foreach hecha con call y enviando el nuevo contexto, en lugar de un arreglo un nodeList
+      buttons.forEach(button => {
+        button.onclick = () => alert('Nunca pares de aprender!');
+      });
+*/
+      //si le das click a los 3 botones, no muestran la alerta, 
+
+      /*
+        marca el siguiente error, porque getElementsByClassName regresa un NodeList, no un Arreglo, PERO
+        ambos se parecen
+            Uncaught TypeError: buttons.forEach is not a function
+            at call-apply-bind.html:97
+      */
+
+      // NodeList se parece a los arreglos, entonces se puede hacer uso del foreah usando :
+      // lo que sabemos es que AMBOS tiene un apropiedad llamada lenght, para saber el tamaño, 
+      //esto es suficiente para hacer algunas de las operaciones de ARREGLOS:
+
+      //por lo tanto a la funcion foreach de un array, le podemos cambiar el this usando la funcion call:
+      //y el nuevo this seria el NodeList, es decir buttons
+      //se reescribe el metodo foreach mediante su prototype.
+      //NOTA: para que funcion, es necesario comentar la funcion button.foreach anterior.
+
+      //el foreach solo requiere el tamaño de arreglo o del nodeList para operar, por eso con el buttons.length, es mas que sufiente
+       Array.prototype.forEach.call(buttons, button => {
+        button.onclick = () => alert(`Nunca pares de aprender! \n\n\n Presionaste el boton: ${button.id.toUpperCase()}`);
+      });
+       
+    </script>
+  </body>
+</html>

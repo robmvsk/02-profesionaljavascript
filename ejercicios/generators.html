@@ -1,0 +1,150 @@
+<html>
+  <head>
+    <title>Generators</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script>
+      // Los generadores son funciones de las que se puede salir y volver a entrar.
+      // Su contexto (asociación de variables) será conservado entre las reentradas.
+      // Cada vez que llamamos next, la ejecución del generador va a continuar hasta el proximo yield
+      function* simpleGenerator() {  //esta NO es una funcion que se pueda ejecutar
+        console.log('GENERATOR START');
+        yield 1;
+        yield 2;
+        yield 3;
+        console.log('GENERATOR END');
+      }
+
+ /*       
+      const gen = simpleGenerator();  //si lo vemos desde la consola dice:  simpleGenerator {<suspended>}
+      gen.next(); //necesita la funcion next(), para continuar o reanudar su ejecucion. SIEMPRE inicia e suspendido
+      desde consola que valores regresa cada vez que se usa next():
+        gen.next()
+            generators.html:15 GENERATOR START
+            {value: 1, done: false}
+        gen.next()
+            {value: 2, done: false}
+        gen.next()
+            {value: 3, done: false}
+        gen.next()
+            generators.html:19 GENERATOR END
+            {value: undefined, done: true}
+ */
+
+      // Podemos hacer generadores infinitos.
+      function* idMaker() {
+        let id = 1;
+        while (true) {
+          yield id;
+          id = id + 1;
+        }
+      }
+
+      /* probando desde la consola
+        const gen = idMaker()
+            undefined
+        gen
+            idMaker {<suspended>}
+        gen.naext()
+            VM20820:1 Uncaught TypeError: gen.naext is not a function
+                at <anonymous>:1:5
+            (anonymous) @ VM20820:1
+        gen.next()
+            {value: 1, done: false}
+        gen.next()
+            {value: 2, done: false}
+        gen.next()
+            {value: 3, done: false}
+        gen.next()
+            {value: 4, done: false}
+
+        El hilo principal no se traba, no se bloquea, ya que a pesar de tener un ciclo infinito, con el generator
+        NO se trabaj, ya que se detiene en cada nueva ejecucion, hasta el proximo llamado de next()
+        console.log('hola')
+            VM20889:1 hola
+            undefined
+        2+2
+            4
+
+      */
+
+      // Cuando llamamos next también podemos pasar valores que la función recibe.
+      function* idMakerWithReset() {
+        let id = 1;
+        let reset;
+        while (true) {
+          reset = yield id;
+          if (reset) {
+            id = 1;
+          } else {
+            id = id + 1;
+          }
+        }
+      }
+
+      /*
+        const gen = idMakerWithReset()
+            undefined
+        gen.next()
+            {value: 1, done: false}
+        gen.next()
+            {value: 2, done: false}
+        gen.next()
+            {value: 3, done: false}
+        gen.next()
+            {value: 4, done: false}
+        gen.next(true)
+            {value: 1, done: false}
+        gen.next()
+            {value: 2, done: false}
+        gen.next()
+            {value: 3, done: false}
+      */
+
+      // Ahora hagamos un ejemplo un poco más complejo: la secuencia fibonacci
+      // Los generadores se prestan para crear funciones eficientes en memoria
+      //los genere de forma Lazzy, es decir, solo cuando los necesite.
+      function* fibonacci() {
+        let a = 0;
+        let b = 1;
+
+        //inicio codigo agregado para que imprima 2 veces el 1
+        let bandera = true;
+
+        if(bandera) {
+            yield b;
+        }
+        //fin codigo nuevo
+        
+        while (true) {
+            //debugger;
+          const nextNumber = a + b;
+          a = b;
+          b = nextNumber;
+          yield nextNumber;
+        }
+      }
+
+      /*
+        const gen = fibonacci()
+            undefined
+        gen.next()
+            {value: 2, done: false}
+        gen.next()
+            {value: 3, done: false}
+        gen.next()
+            {value: 5, done: false}
+        gen.next()
+            {value: 8, done: false}
+        gen.next()
+            {value: 13, done: false}
+        gen.next()
+            {value: 21, done: false}
+      */
+    </script>
+  </body>
+</html>

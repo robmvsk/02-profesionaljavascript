@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <title>Closures</title>
+    </head>
+    <body>
+        <a href="/ejercicios/"> go back</a>
+        <p> <em>Abre la consola</em> </p>
+
+        <script>
+            //Closures
+            //printColor
+
+            /*
+            //desde consola si se imprime la variable color con el valor de green
+            let color = 'green';
+
+            function printColor() {
+                console.log(color);
+            }
+
+            printColor();
+            */
+
+            //IIFE
+            //con la funcion IIFE, color y printColor ya no son accesible, solo dentro del ambito de la IIFE, se 'conviernten' en local
+            //OJO: cuidado con usar las funciones IIFE indiscriminadamente, ya que cuentan performance a la aplicacion.
+
+            //printColor dentro de un IIFE
+            (function () {  //la funcion IIFE, es una funcion anonima que incluye otra funcion
+                let color = 'green';
+
+                function printColor() {   //funcion dentro de una funcion, esta si tiene acceso a la variable color, porque esta dentro del mismo SCOPE
+                    console.log(color);
+                }
+
+                printColor();
+            })();  //Expresion funcional que se le invoca inmediatamente
+
+
+            //funciones que regresan funciones
+            //es un closure, ya que la funcion anonima recuerda el valor de colorMessage, porque esta en el mismo Scope. El scope lo 'memorizo', tipo variables privadas, ya que javaScript no trabaja con este concepto.
+            function makeColorPrinter(color) {
+                let colorMessage = `The color is ${color}`;  //comillas francesas  AltGr + ]
+
+                return function () {
+                    console.log(colorMessage);
+                };
+            }
+            
+            //usando la maquina para construir colores
+            let greenColorPrinter =  makeColorPrinter('green');
+            console.log(greenColorPrinter);  //que pasa? se esta imprimientdo uan funcion y no el resultado
+            /*  resultado inicial, regresa una funcion
+            ƒ () {
+                    console.log(colorMessage);
+                }
+            */
+           //para que muestre el resultado de la funcion se debe ejecutar, entonces lo que se hace es ponerle los parentesis ()
+           console.log(greenColorPrinter());  //asi se ejecuta la funcion resultado, y entonces esa a su vez regresa green
+
+            
+            //vriables 'privadas'
+            // que pasa si quiero que nadie vea el valor de counter??
+            const contador = {
+                counter: 3,
+            }
+            
+            console.log(contador.counter);  //cualquiera tiene visibilidad sobre counter.  que hacer?
+            //que pasa si alguien por error, modifica ese valor que no queriamos que nadie moviera?
+            contador.counter = 99;
+            console.log(contador.counter);  //se modifica sin que nos demos cuenta.
+
+            //mediante closures, se puede hacer 'privada' counter:
+            function makeCounter(n) {
+                let count = n;
+
+                return {
+                    increase: () => { 
+                        count = count + 1; 
+                    },
+                    decrease: function () {
+                        count = count - 1; 
+                     },
+                    getCount: function () { return count; },
+                };
+            }
+
+            let counter = makeCounter(7);
+            console.log("conter : ", counter.count);  //aparece como undefined, es decir ya no la puedo ver, y se maneja como si fuera 'privada'
+            //counter.count, no puede ser modifcada por nadie, solo mediante el metodo getCount()
+            //pero si se tiene acceso a los metodos: increase, decrease y getCount
+            console.log('The count is: ', counter.getCount);  //si lo vemos en la consola, regresa una funcion
+            console.log('The count is: ', counter.getCount());  //al mandarlo a ejecutar, se imprime le valor de count, en este caso 7.
+
+            counter.increase();
+            console.log('The count is: ', counter.getCount()); 
+            counter.decrease();
+            counter.decrease();
+            counter.decrease();
+            counter.decrease();
+            console.log('The count is: ', counter.getCount()); 
+            console.log('The counter is, before change: ', counter); 
+            /*
+                {increase: ƒ, decrease: ƒ, getCount: ƒ}
+                    decrease: ƒ ()
+                    getCount: ƒ ()
+                    increase: () => {…}
+                    __proto__: Object
+            */
+
+            counter.count = 9999;  //no marca error, PERO no va a tener impacto sobre la variable 'privada' count, ya que no le puede cambiar el valor, como en el ejemplo anterior, sin closures., se genera como si fuera otra varable totalmente diferente y nueva
+            console.log('The count is: ', counter.getCount()); 
+            console.log('The counter is, after change: ', counter); 
+            /*
+            El nuevo cunt, es totalmente diferente al cunt que esta como privado.
+            {count: 9999, increase: ƒ, decrease: ƒ, getCount: ƒ}
+                count: 9999
+                decrease: ƒ ()
+                getCount: ƒ ()
+                increase: () => {…}
+                __proto__: Object
+            */
+            counter.increase();
+            console.log('The count is: ', counter.getCount()); 
+            //verificamos que el count expuesto se quedo en 999 y el count privado cambio a 5
+            //el valor privado, no se puede leer o modifcar directamente, se tiene que hacer por los metodos expuestos para ello.
+            //permite encapsular variables para evitar caombios inesperados en los resultados
+            console.log('The counter is, after change: ', counter); 
+
+        </script>
+    
+     </body>
+</html>
