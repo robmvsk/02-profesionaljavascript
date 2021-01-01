@@ -1,0 +1,17 @@
+{
+  "name": "@robmvskh/mediaplayer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/MediaPlayer.js",
+  "scripts": {
+    "convierte": "tsc",
+    "build": "tsc src/**/*.ts src/plugins/*.ts src/plugins/**/*.ts --outDir lib",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}

@@ -7,13 +7,14 @@ esto es porque no es necesario la extension .ts en el import, se debe quitar
 */
 
  //cuando el que se importa el el export default, NO necesita {}, solo hay un default, el resto de los export del mismo archivo, deben ir entre  { }
- import MediaPlayer  from "./MediaPlayer";   //OJO, es super importante que cuando se llame como type="module", lleve siempre la extension, SINO fallara.
+ //como el archivo principal es MediaPlayer se puede omitir y quedar asi:  import MediaPlayer  from "@robmvskh/mediaplayer";
+ import MediaPlayer  from "@robmvskh/mediaplayer";   //OJO, es super importante que cuando se llame como type="module", lleve siempre la extension, SINO fallara.
 //el primer plugin, nos va a resolver el problema del autoplay que tira un error
-import AutoPlay from './plugins/AutoPlay';  //IMPORTANTE: sino se le cambia aqui la extension, no te da el auto fix, para convertirlo a clase
+import AutoPlay from '@robmvskh/mediaplayer/lib/plugins/AutoPlay';  //IMPORTANTE: sino se le cambia aqui la extension, no te da el auto fix, para convertirlo a clase
 //nuevo plugin para hacer el autoPause, cuando el elemento se vea menos del 25% en pantalla
-import AutoPause from './plugins/AutoPause';
+import AutoPause from '@robmvskh/mediaplayer/lib/plugins/AutoPause';
 //nuevo plugin para mostra un un Ads cad a30 segundos mientras se muestra el video
-import AdsPlugin from './plugins/Ads';
+import AdsPlugin from '@robmvskh/mediaplayer/lib/plugins/Ads';
 
 
 const video = document.querySelector('video');
