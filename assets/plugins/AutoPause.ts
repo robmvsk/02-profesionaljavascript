@@ -1,4 +1,11 @@
-class AutoPause {
+import MediaPlayer from "../MediaPlayer";
+
+class AutoPause {  //para que muestre el quick fix, es necesario que el archivo sea .js y lo convierta a class
+    private threshold: number;
+    private player: MediaPlayer;  //se tuvo que convertir a una clase (usando explicitamente la palabra class)
+    private pausedIntersectionOfMe: boolean;
+    private PuasedVisibleOfMe: boolean;
+
     constructor() {
         this.pausedIntersectionOfMe = false;
         this.PuasedVisibleOfMe = false;
@@ -18,8 +25,10 @@ class AutoPause {
        this.handleVisibilityChange = this.handleVisibilityChange.bind(this); //el this va a ser la instancia del objeto, en este caso del plugin, es decir la instancia de MediaPlayer
        //porque a este nivel, tis es la instancia del objeto AutoPause (del plugin AutoPause)
     }
-    run(player) {
-        this.player = player;
+    public run(player: MediaPlayer) {
+        this.player = player;  //IMPORTANTE:  this.player.  ya tiene acceso a todos los metodos y propiedades de la clase player
+        // player.  IMPORTANTE: sino se tipa player, no e tiene acceso a sus metodos y propiedades
+
         //el primer parametro es un handle, es una funcion y es quien recibe el anuncio, hey hubo una interseccion en el objeto que estas observando
         //el segundo es un objeto de configuaracion (hay que pasarle un umbral o threshold: y que define que % del elemento debe tener con el contenedor para avisarte)
         //const observer = new IntersectionObserver(handle, config);
@@ -37,10 +46,10 @@ class AutoPause {
         document.addEventListener("visibilitychange", this.handleVisibilityChange);  //se implementa el metodo handleVisibilityChange
     }
 
-    handleIntersection(entries) {  //entries: son la lista de elementos que se estan observando, en este caso solo sera uno.
-        const entry = entries[0];
+    private handleIntersection(entries: IntersectionObserverEntry[]) {  //entries: son la lista de elementos que se estan observando, en este caso solo sera uno.
+        const entry = entries[0];  //tipar a entries, os permite tener acceso a todos los metodos del objeto con entry. y nos mostrara todos sus metodos y propiedades
         console.log(entry);
-
+        
         const isVisible = entry.intersectionRatio >= this.threshold;
 
         //recordando que el player, ya no trae todos los metodos expuestos, entre ellos el mute(), se usa ahora el getter
@@ -56,7 +65,7 @@ class AutoPause {
         }
     }
 
-    handleVisibilityChange() {
+    private handleVisibilityChange() {
         const isVisible = document.visibilityState === "visible";  //puede ser tambien hidden 
 
         console.log(`isVisible: ${isVisible}, this.player.pausedOk: ${this.player.pausedOk}, this.PuasedVisibleOfMe: ${this.PuasedVisibleOfMe}, document.visibilityState: ${document.visibilityState}`);

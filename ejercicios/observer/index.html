@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Observer</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/index.html">Go back</a>
+    <p><em>Abre la consola</em></p>
+    <hr>
+
+    <p>Vamos a suscribir el precio del bitcoin a la información que tiene que publicar el input.
+        Vamos a simular las subscripciones que ocurren entre los subjects y los observers:
+    </p>
+
+    <h1>Precio del Bitcoin</h1>
+    <h3>
+      <ul>
+        <ol> <p>Subscriptor 1: <em id="price">$0.00</em>    (es el price display)</p> </ol>
+        <ol> <p>Subscriptor 2:  <em id="priceS2">$0.00</em>  (es el price display)</p> </ol>
+        <ol> <p>Subscriptor 3: <em id="priceS3">$0.00</em>   (es el price display)</p> </ol>
+      </ul>
+      
+    </h3>
+
+    <input id="value" />
+
+
+    <hr>
+    <script src="/ejercicios/observer/index.ts"></script>
+  </body>
+</html>

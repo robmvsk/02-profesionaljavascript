@@ -19,6 +19,7 @@ async function precache() {
     //una vez que esta la instancia, se agregan los recursos de la cache.
     //el requeste de '/' es importante que se agregue, aunk parezca que es lo mismo que /index.html'
     cache.addAll( [
+       /*  Se comenta estos archivos de precache, despues de empezar a usar Parcel (usar typescript) y cambiar la estension a ts, y que son diferente los nombres en la carpeta dist
         '/',
         '/index.html',
         '/assets/index.js',
@@ -26,7 +27,8 @@ async function precache() {
         '/assets/plugins/AutoPlay.js',
         '/assets/plugins/AutoPause.js',
         '/assets/index.css',
-        '/assets/BigBuckBunny.mp4',    
+        '/assets/BigBuckBunny.mp4',  
+        */   
     ] );
 };
 
